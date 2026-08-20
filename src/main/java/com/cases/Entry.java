@@ -16,4 +16,8 @@ public class Entry {
     public Process runFromProperty() throws Exception {
         return new Middle().pass(readPropertyTarget());
     }
+
+    public Process runWithRetry() throws Exception {
+        return new Middle().passWithRetry(readEnvTarget());
+    }
 }
