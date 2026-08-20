@@ -48,3 +48,49 @@ a technology-set mismatch between the branches drops the baseline silently, and
 Per PR: the Frogbot comment (findings + violations sections), and the workflow debug log —
 `Diff mode - SAST results to compare provided` present/absent, `No target found`, and the
 `roots:` list of the scanner input.
+
+## Observed results (2026-08-20, frogbot v3.5.0, tokyoshiftleft)
+
+"Diff scan reported" is the source-branch scan's own output (location-grouped count) from the run
+log; "PR comment" is what the developer actually saw.
+
+| PR | Case | Diff scan reported | Hypothesis | PR comment |
+|----|------|--------------------|------------|------------|
+| 1 | control-unrelated | nothing | ✅ | green banner |
+| 2 | control-new-vuln | 1 — `NewVuln.java` | ✅ | **green banner — finding swallowed** |
+| 3 | add-source | 1 — at `Sink.java` (untouched) | ✅ | green banner — swallowed |
+| 4 | remove-source | nothing | ✅ | green banner |
+| 5 | modify-middle | 1 — at `Sink.java` (untouched) | ✅ resurfaced | green banner — swallowed |
+| 6 | benign-middle | nothing | ✅ | green banner |
+| 7 | modify-sink | 1 — at `Sink.java` | ✅ | green banner — swallowed |
+| 8 | remove-sink | nothing | ✅ | green banner |
+| 9 | add-flow-middle | **nothing** | ❌ new route ≠ new flow | green banner |
+| 10 | tech-change | **2 — `Sink.java` + `Legacy.java` canary** | ✅ baseline loss proven | only foreign SCA violations; SAST section says "Not Found" |
+| 11 | sink-line-shift | nothing | ✅ fingerprint survives | green banner |
+| 12 | rename-middle | 1 — at `Sink.java` | ✅ resurfaced | green banner — swallowed |
+
+### Case 10 — the baseline-loss proof
+
+Debug log of the re-run (`JFROG_CLI_LOG_LEVEL=DEBUG`):
+
+```
+Searching for target '' with technology 'Pip' in results with base path '/tmp/jfrog.cli.temp.-…'
+Comparing target /tmp/jfrog.cli.temp.-… [unknown], relative: ''
+No target found
+```
+
+and no `Diff mode - SAST results to compare provided` line — the source scan ran without a
+baseline. Case 5's log has `Found target …` followed by `Diff mode - SAST results to compare
+provided`. One `requirements.txt` flips a repo from "diffed" to "everything is new".
+
+### Two findings beyond the diff mechanics
+
+1. **Violations mode swallows new SAST findings.** The tenant profile sets
+   `include_vulnerabilities_and_violations: false` and a watch exists, so only violations are
+   posted — and no SAST violation was ever generated server-side (the watch's violation count is 0
+   across all 12 PRs, `sast` policy criteria notwithstanding). Net effect: PRs 2/3/5/7/12 introduced
+   SAST findings the scanner detected, and every one of them got the green "no new security issues"
+   banner.
+2. **A new route between an existing source and sink is not a new finding** (case 9):
+   `significant_full_path` keys on the significant steps, so alternate paths through the middle
+   don't re-fire. Good for noise; worth knowing when reasoning about coverage.
