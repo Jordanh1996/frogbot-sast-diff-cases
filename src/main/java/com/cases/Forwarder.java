@@ -1,6 +1,6 @@
 package com.cases;
 
-public class Middle {
+public class Forwarder {
     public Process pass(String value) throws Exception {
         return new Sink().exec(value);
     }

@@ -10,10 +10,10 @@ public class Entry {
     }
 
     public Process runFromEnv() throws Exception {
-        return new Middle().pass(readEnvTarget());
+        return new Forwarder().pass(readEnvTarget());
     }
 
     public Process runFromProperty() throws Exception {
-        return new Middle().pass(readPropertyTarget());
+        return new Forwarder().pass(readPropertyTarget());
     }
 }
