@@ -1,0 +1,801 @@
+{
+    "runs": [
+        {
+            "tool": {
+                "driver": {
+                    "name": "\ud83d\udc38 JFrog SAST",
+                    "rules": [
+                        {
+                            "id": "java-stored-command-injection",
+                            "defaultConfiguration": {
+                                "parameters": {
+                                    "properties": {
+                                        "CWE": "78",
+                                        "owasp_top_10_2021": "A03",
+                                        "owasp_top_10_llm": "LLM-02"
+                                    }
+                                }
+                            },
+                            "fullDescription": {
+                                "text": "### Overview\nCommand Injection is a type of vulnerability that allows an attacker to\nexecute arbitrary code on a remote computer or device. This can allow the\nattacker to gain full control of the target system, potentially leading to\nsensitive information being compromised or unauthorized actions being performed.\n\n### Vulnerable example\n```java\npublic class CommandiVulnerableServlet extends HttpServlet {\n    protected void doGet(HttpServletRequest request, HttpServletResponse response)\n            throws ServletException, IOException {\n        String query = \"SELECT ip_address FROM users WHERE username = 'admin'\";\n        statement = connection.createStatement();\n        String ip = statement.executeQuery(query);\n        String cmd = \"ping -c 1 \" + ip;\n        Runtime.getRuntime().exec(cmd);\n    }\n}\n```\nIn this example, the `exec` command can be altered by a stored parameter that\nmight have been saved by an attacker, to execute arbitrary commands that can\nhack into the system.\n\n### Remediation\n```diff\npublic class CommandiSafeServlet extends HttpServlet {\n    protected void doGet(HttpServletRequest request, HttpServletResponse response)\n            throws ServletException, IOException {\n        String query = \"SELECT ip_address FROM users WHERE username = 'admin'\";\n        statement = connection.createStatement();\n        String ip = statement.executeQuery(query);\n-         String cmd = \"ping -c 1 \" + ip;\n-         Runtime.getRuntime().exec(cmd);\n+         String[] cmdArray = {\"ping\", \"-c\", \"1\", ip};\n+         Runtime.getRuntime().exec(cmdArray);\n    }\n}\n```\nSplitting the stored data into the command and its parameters\nmakes the `exec` command safe.\n",
+                                "markdown": "### Overview\nCommand Injection is a type of vulnerability that allows an attacker to\nexecute arbitrary code on a remote computer or device. This can allow the\nattacker to gain full control of the target system, potentially leading to\nsensitive information being compromised or unauthorized actions being performed.\n\n### Vulnerable example\n```java\npublic class CommandiVulnerableServlet extends HttpServlet {\n    protected void doGet(HttpServletRequest request, HttpServletResponse response)\n            throws ServletException, IOException {\n        String query = \"SELECT ip_address FROM users WHERE username = 'admin'\";\n        statement = connection.createStatement();\n        String ip = statement.executeQuery(query);\n        String cmd = \"ping -c 1 \" + ip;\n        Runtime.getRuntime().exec(cmd);\n    }\n}\n```\nIn this example, the `exec` command can be altered by a stored parameter that\nmight have been saved by an attacker, to execute arbitrary commands that can\nhack into the system.\n\n### Remediation\n```diff\npublic class CommandiSafeServlet extends HttpServlet {\n    protected void doGet(HttpServletRequest request, HttpServletResponse response)\n            throws ServletException, IOException {\n        String query = \"SELECT ip_address FROM users WHERE username = 'admin'\";\n        statement = connection.createStatement();\n        String ip = statement.executeQuery(query);\n-         String cmd = \"ping -c 1 \" + ip;\n-         Runtime.getRuntime().exec(cmd);\n+         String[] cmdArray = {\"ping\", \"-c\", \"1\", ip};\n+         Runtime.getRuntime().exec(cmdArray);\n    }\n}\n```\nSplitting the stored data into the command and its parameters\nmakes the `exec` command safe.\n"
+                            },
+                            "help": {
+                                "text": "### Overview\nCommand Injection is a type of vulnerability that allows an attacker to\nexecute arbitrary code on a remote computer or device. This can allow the\nattacker to gain full control of the target system, potentially leading to\nsensitive information being compromised or unauthorized actions being performed.\n\n### Vulnerable example\n```java\npublic class CommandiVulnerableServlet extends HttpServlet {\n    protected void doGet(HttpServletRequest request, HttpServletResponse response)\n            throws ServletException, IOException {\n        String query = \"SELECT ip_address FROM users WHERE username = 'admin'\";\n        statement = connection.createStatement();\n        String ip = statement.executeQuery(query);\n        String cmd = \"ping -c 1 \" + ip;\n        Runtime.getRuntime().exec(cmd);\n    }\n}\n```\nIn this example, the `exec` command can be altered by a stored parameter that\nmight have been saved by an attacker, to execute arbitrary commands that can\nhack into the system.\n\n### Remediation\n```diff\npublic class CommandiSafeServlet extends HttpServlet {\n    protected void doGet(HttpServletRequest request, HttpServletResponse response)\n            throws ServletException, IOException {\n        String query = \"SELECT ip_address FROM users WHERE username = 'admin'\";\n        statement = connection.createStatement();\n        String ip = statement.executeQuery(query);\n-         String cmd = \"ping -c 1 \" + ip;\n-         Runtime.getRuntime().exec(cmd);\n+         String[] cmdArray = {\"ping\", \"-c\", \"1\", ip};\n+         Runtime.getRuntime().exec(cmdArray);\n    }\n}\n```\nSplitting the stored data into the command and its parameters\nmakes the `exec` command safe.\n"
+                            },
+                            "shortDescription": {
+                                "text": "Stored Command Injection"
+                            }
+                        }
+                    ],
+                    "version": "USAF version: 0.8.111; rules: 3eb4cce60aaa8b5f1cbbc24e112f17243007fa24"
+                }
+            },
+            "invocations": [
+                {
+                    "executionSuccessful": true,
+                    "arguments": [
+                        "/Users/jordanh/.jfrog/dependencies/analyzerManager/zd_scanner/scanner",
+                        "scan",
+                        "/private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/baseline-results.sarif",
+                        "/var/folders/pn/89kbhf0x0qv55f3tzx9f09l80000gp/T/zd-scan-config-3848216757.yaml"
+                    ],
+                    "workingDirectory": {
+                        "uri": "file:///Users/jordanh/.jfrog/dependencies/analyzerManager"
+                    }
+                }
+            ],
+            "results": [
+                {
+                    "message": {
+                        "text": "Untrusted stored input may influence external OS command"
+                    },
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Entry.readEnvTarget"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Entry.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 46,
+                                                        "endLine": 5,
+                                                        "snippet": {
+                                                            "text": "System.getenv(\"EXPORT_TARGET\")"
+                                                        },
+                                                        "startColumn": 16,
+                                                        "startLine": 5
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Entry.readEnvTarget"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Entry.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 47,
+                                                        "endLine": 5,
+                                                        "snippet": {
+                                                            "text": "return System.getenv(\"EXPORT_TARGET\");"
+                                                        },
+                                                        "startColumn": 9,
+                                                        "startLine": 5
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Entry.runFromEnv"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Entry.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 49,
+                                                        "endLine": 13,
+                                                        "snippet": {
+                                                            "text": "readEnvTarget()"
+                                                        },
+                                                        "startColumn": 34,
+                                                        "startLine": 13
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Entry.runFromEnv"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Entry.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 50,
+                                                        "endLine": 13,
+                                                        "snippet": {
+                                                            "text": "new Middle().pass(readEnvTarget())"
+                                                        },
+                                                        "startColumn": 16,
+                                                        "startLine": 13
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Middle.pass"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Middle.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 37,
+                                                        "endLine": 4,
+                                                        "snippet": {
+                                                            "text": "String value"
+                                                        },
+                                                        "startColumn": 25,
+                                                        "startLine": 4
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Middle.pass"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Middle.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 37,
+                                                        "endLine": 5,
+                                                        "snippet": {
+                                                            "text": "value"
+                                                        },
+                                                        "startColumn": 32,
+                                                        "startLine": 5
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Sink.exec"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Sink.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 37,
+                                                        "endLine": 4,
+                                                        "snippet": {
+                                                            "text": "String value"
+                                                        },
+                                                        "startColumn": 25,
+                                                        "startLine": 4
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Sink.exec"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Sink.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 84,
+                                                        "endLine": 5,
+                                                        "snippet": {
+                                                            "text": "value"
+                                                        },
+                                                        "startColumn": 79,
+                                                        "startLine": 5
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Sink.exec"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Sink.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 84,
+                                                        "endLine": 5,
+                                                        "snippet": {
+                                                            "text": "\"/usr/bin/report-export --target \" + value"
+                                                        },
+                                                        "startColumn": 42,
+                                                        "startLine": 5
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Sink.exec"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Sink.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 85,
+                                                        "endLine": 5,
+                                                        "snippet": {
+                                                            "text": "Runtime.getRuntime().exec(\"/usr/bin/report-export --target \" + value)"
+                                                        },
+                                                        "startColumn": 16,
+                                                        "startLine": 5
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "fingerprints": {
+                        "precise_sink_and_sink_function": "b3a66d4f9c15bcc082480bfc9dcfcf56",
+                        "significant_full_path": "82964e227d3a6da23b7148e1b6de65cf",
+                        "unique_finding_fingerprint": "82964e227d3a6da23b7148e1b6de65cf"
+                    },
+                    "guid": "ac0bcb51-28db-4c21-be8b-550d0ae543ab",
+                    "locations": [
+                        {
+                            "logicalLocations": [
+                                {
+                                    "fullyQualifiedName": "com.cases.Sink.exec"
+                                }
+                            ],
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Sink.java"
+                                },
+                                "region": {
+                                    "endColumn": 85,
+                                    "endLine": 5,
+                                    "snippet": {
+                                        "text": "Runtime.getRuntime().exec(\"/usr/bin/report-export --target \" + value)"
+                                    },
+                                    "startColumn": 16,
+                                    "startLine": 5
+                                }
+                            }
+                        }
+                    ],
+                    "partialFingerprints": {
+                        "precise_sink_and_sink_function": "b3a66d4f9c15bcc082480bfc9dcfcf56",
+                        "significant_full_path": "82964e227d3a6da23b7148e1b6de65cf",
+                        "unique_finding_fingerprint": "82964e227d3a6da23b7148e1b6de65cf"
+                    },
+                    "properties": {
+                        "query_tags": [
+                            "stored_sources_for_path_traversal",
+                            "stored_sources",
+                            "command_execution"
+                        ],
+                        "rule_tags": [
+                            "RCE",
+                            "command",
+                            "injection",
+                            "Stored",
+                            "owasp_top_10_2021=A03",
+                            "owasp_top_10_llm=LLM-02"
+                        ]
+                    },
+                    "ruleId": "java-stored-command-injection"
+                },
+                {
+                    "message": {
+                        "text": "Untrusted stored input may influence external OS command"
+                    },
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Entry.readPropertyTarget"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Entry.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 51,
+                                                        "endLine": 9,
+                                                        "snippet": {
+                                                            "text": "System.getProperty(\"export.target\")"
+                                                        },
+                                                        "startColumn": 16,
+                                                        "startLine": 9
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Entry.readPropertyTarget"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Entry.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 52,
+                                                        "endLine": 9,
+                                                        "snippet": {
+                                                            "text": "return System.getProperty(\"export.target\");"
+                                                        },
+                                                        "startColumn": 9,
+                                                        "startLine": 9
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Entry.runFromProperty"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Entry.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 54,
+                                                        "endLine": 17,
+                                                        "snippet": {
+                                                            "text": "readPropertyTarget()"
+                                                        },
+                                                        "startColumn": 34,
+                                                        "startLine": 17
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Entry.runFromProperty"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Entry.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 55,
+                                                        "endLine": 17,
+                                                        "snippet": {
+                                                            "text": "new Middle().pass(readPropertyTarget())"
+                                                        },
+                                                        "startColumn": 16,
+                                                        "startLine": 17
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Middle.pass"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Middle.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 37,
+                                                        "endLine": 4,
+                                                        "snippet": {
+                                                            "text": "String value"
+                                                        },
+                                                        "startColumn": 25,
+                                                        "startLine": 4
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Middle.pass"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Middle.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 37,
+                                                        "endLine": 5,
+                                                        "snippet": {
+                                                            "text": "value"
+                                                        },
+                                                        "startColumn": 32,
+                                                        "startLine": 5
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Sink.exec"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Sink.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 37,
+                                                        "endLine": 4,
+                                                        "snippet": {
+                                                            "text": "String value"
+                                                        },
+                                                        "startColumn": 25,
+                                                        "startLine": 4
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Sink.exec"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Sink.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 84,
+                                                        "endLine": 5,
+                                                        "snippet": {
+                                                            "text": "value"
+                                                        },
+                                                        "startColumn": 79,
+                                                        "startLine": 5
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Sink.exec"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Sink.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 84,
+                                                        "endLine": 5,
+                                                        "snippet": {
+                                                            "text": "\"/usr/bin/report-export --target \" + value"
+                                                        },
+                                                        "startColumn": 42,
+                                                        "startLine": 5
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.Sink.exec"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Sink.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 85,
+                                                        "endLine": 5,
+                                                        "snippet": {
+                                                            "text": "Runtime.getRuntime().exec(\"/usr/bin/report-export --target \" + value)"
+                                                        },
+                                                        "startColumn": 16,
+                                                        "startLine": 5
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "fingerprints": {
+                        "precise_sink_and_sink_function": "b3a66d4f9c15bcc082480bfc9dcfcf56",
+                        "significant_full_path": "fd75952eac453a86d3068c1c10a83d4a",
+                        "unique_finding_fingerprint": "fd75952eac453a86d3068c1c10a83d4a"
+                    },
+                    "guid": "ab15e7a8-371b-4cd6-974f-68f798d2a061",
+                    "locations": [
+                        {
+                            "logicalLocations": [
+                                {
+                                    "fullyQualifiedName": "com.cases.Sink.exec"
+                                }
+                            ],
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/Sink.java"
+                                },
+                                "region": {
+                                    "endColumn": 85,
+                                    "endLine": 5,
+                                    "snippet": {
+                                        "text": "Runtime.getRuntime().exec(\"/usr/bin/report-export --target \" + value)"
+                                    },
+                                    "startColumn": 16,
+                                    "startLine": 5
+                                }
+                            }
+                        }
+                    ],
+                    "partialFingerprints": {
+                        "precise_sink_and_sink_function": "b3a66d4f9c15bcc082480bfc9dcfcf56",
+                        "significant_full_path": "fd75952eac453a86d3068c1c10a83d4a",
+                        "unique_finding_fingerprint": "fd75952eac453a86d3068c1c10a83d4a"
+                    },
+                    "properties": {
+                        "query_tags": [
+                            "stored_sources_for_path_traversal",
+                            "stored_sources",
+                            "command_execution"
+                        ],
+                        "rule_tags": [
+                            "RCE",
+                            "command",
+                            "injection",
+                            "Stored",
+                            "owasp_top_10_2021=A03",
+                            "owasp_top_10_llm=LLM-02"
+                        ]
+                    },
+                    "ruleId": "java-stored-command-injection"
+                },
+                {
+                    "message": {
+                        "text": "Untrusted stored input may influence external OS command"
+                    },
+                    "codeFlows": [
+                        {
+                            "threadFlows": [
+                                {
+                                    "locations": [
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.legacy.Legacy.archive"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/legacy/Legacy.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 55,
+                                                        "endLine": 5,
+                                                        "snippet": {
+                                                            "text": "System.getenv(\"LEGACY_TARGET\")"
+                                                        },
+                                                        "startColumn": 25,
+                                                        "startLine": 5
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.legacy.Legacy.archive"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/legacy/Legacy.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 86,
+                                                        "endLine": 6,
+                                                        "snippet": {
+                                                            "text": "target"
+                                                        },
+                                                        "startColumn": 80,
+                                                        "startLine": 6
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.legacy.Legacy.archive"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/legacy/Legacy.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 86,
+                                                        "endLine": 6,
+                                                        "snippet": {
+                                                            "text": "\"/usr/bin/legacy-archive --target \" + target"
+                                                        },
+                                                        "startColumn": 42,
+                                                        "startLine": 6
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "location": {
+                                                "logicalLocations": [
+                                                    {
+                                                        "fullyQualifiedName": "com.cases.legacy.Legacy.archive"
+                                                    }
+                                                ],
+                                                "physicalLocation": {
+                                                    "artifactLocation": {
+                                                        "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/legacy/Legacy.java"
+                                                    },
+                                                    "region": {
+                                                        "endColumn": 87,
+                                                        "endLine": 6,
+                                                        "snippet": {
+                                                            "text": "Runtime.getRuntime().exec(\"/usr/bin/legacy-archive --target \" + target)"
+                                                        },
+                                                        "startColumn": 16,
+                                                        "startLine": 6
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ],
+                    "fingerprints": {
+                        "precise_sink_and_sink_function": "a88f6e208c400276582439c6c2db7b65",
+                        "significant_full_path": "b11d119d75a4130d3427b67cd5693de3",
+                        "unique_finding_fingerprint": "b11d119d75a4130d3427b67cd5693de3"
+                    },
+                    "guid": "d012217c-5e09-41d1-b407-6ee5f560c7c1",
+                    "locations": [
+                        {
+                            "logicalLocations": [
+                                {
+                                    "fullyQualifiedName": "com.cases.legacy.Legacy.archive"
+                                }
+                            ],
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "file:///private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src/main/java/com/cases/legacy/Legacy.java"
+                                },
+                                "region": {
+                                    "endColumn": 87,
+                                    "endLine": 6,
+                                    "snippet": {
+                                        "text": "Runtime.getRuntime().exec(\"/usr/bin/legacy-archive --target \" + target)"
+                                    },
+                                    "startColumn": 16,
+                                    "startLine": 6
+                                }
+                            }
+                        }
+                    ],
+                    "partialFingerprints": {
+                        "precise_sink_and_sink_function": "a88f6e208c400276582439c6c2db7b65",
+                        "significant_full_path": "b11d119d75a4130d3427b67cd5693de3",
+                        "unique_finding_fingerprint": "b11d119d75a4130d3427b67cd5693de3"
+                    },
+                    "properties": {
+                        "query_tags": [
+                            "stored_sources_for_path_traversal",
+                            "stored_sources",
+                            "command_execution"
+                        ],
+                        "rule_tags": [
+                            "RCE",
+                            "command",
+                            "injection",
+                            "Stored",
+                            "owasp_top_10_2021=A03",
+                            "owasp_top_10_llm=LLM-02"
+                        ]
+                    },
+                    "ruleId": "java-stored-command-injection"
+                }
+            ]
+        }
+    ],
+    "version": "2.1.0",
+    "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/cos02/schemas/sarif-schema-2.1.0.json"
+}

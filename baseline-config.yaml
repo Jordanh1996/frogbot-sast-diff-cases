@@ -1,0 +1,5 @@
+scans:
+    - roots:
+        - /private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/src
+      type: sast
+      output: /private/tmp/claude-502/-Users-jordanh/71bcb870-2e7a-4722-8194-d904f66cabff/scratchpad/frogbot-sast-diff-cases/baseline-results.sarif
