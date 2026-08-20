@@ -48,3 +48,5 @@ a technology-set mismatch between the branches drops the baseline silently, and
 Per PR: the Frogbot comment (findings + violations sections), and the workflow debug log —
 `Diff mode - SAST results to compare provided` present/absent, `No target found`, and the
 `roots:` list of the scanner input.
+
+_Run log: cases opened 2026-08-20._
